@@ -283,7 +283,7 @@ produced by the commands and are excluded from version control.
 
 | Component | Role |
 | --- | --- |
-| `SiteTitle.astro` | Site title followed by the version selector. Replaces the Starlight component. |
+| `SiteTitle.astro` | Site title followed by the version selector. The title leads to the landing page (`/`, or `/it/` from the Italian pages when the latest version is in Italian). Replaces the Starlight component. |
 | `VersionSelect.astro` | Version selector. |
 | `Banner.astro` | Notice shown on versions other than the latest. Replaces the Starlight component. |
 | `SheetPreview.astro` | Renders a sheet in HTML with the colours of a preset, as the library writes it. |

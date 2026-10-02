@@ -1,6 +1,16 @@
 ---
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import Default from '@astrojs/starlight/components/SiteTitle.astro';
 import VersionSelect from './VersionSelect.astro';
+import { catalogue } from '../lib/version.mjs';
+
+// The site title leads to the landing page at the root of the site, not to the root of the
+// version (which only redirects to the first page of the documentation). Italian pages lead
+// to the Italian landing page when it exists, that is when the latest version is in Italian.
+const route = Astro.locals.starlightRoute;
+const italianLanding = existsSync(join(process.cwd(), 'versions', catalogue.latest, 'manual.it.md'));
+route.siteTitleHref = route.locale === 'it' && italianLanding ? '/it/' : '/';
 ---
 
 <div class="title-with-version">
