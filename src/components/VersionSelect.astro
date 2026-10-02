@@ -1,0 +1,77 @@
+---
+import { catalogue, version } from '../lib/version.mjs';
+import { t, pageLang } from '../lib/i18n.js';
+// The list rendered at build time is refreshed at runtime from /versions.json,
+// so a frozen older build still offers the versions published after it.
+const lang = pageLang(Astro);
+const prefix = Astro.locals.starlightRoute?.locale ?? '';
+const latestWord = t(lang, 'version.latest');
+---
+
+<label class="version-select">
+	<span class="sr-only">{t(lang, 'version.label')}</span>
+	<select data-version-select data-current={version} data-lang={prefix} data-latest-word={latestWord} autocomplete="off">
+		{catalogue.versions.map((v) => (
+			<option value={v} selected={v === version}>
+				{v}{v === catalogue.latest ? ` (${latestWord})` : ''}
+			</option>
+		))}
+	</select>
+	<svg aria-hidden="true" viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M17 9.17a1 1 0 0 0-1.41 0L12 12.71 8.46 9.17a1 1 0 1 0-1.41 1.42l4.24 4.24a1 1 0 0 0 1.42 0L17 10.59a1 1 0 0 0 0-1.42Z"/></svg>
+</label>
+
+<script>
+	import { loadCatalogue, resolvePage, currentLocation } from '../lib/versions-client.js';
+
+	for (const select of document.querySelectorAll<HTMLSelectElement>('[data-version-select]')) {
+		const { current, lang = '', latestWord } = select.dataset as Record<string, string>;
+		loadCatalogue().then((cat) => {
+			if (!cat) return;
+			select.replaceChildren(
+				...cat.versions.map((v: string) => new Option(v + (v === cat.latest ? ` (${latestWord})` : ''), v, false, v === current)),
+			);
+		});
+		select.addEventListener('change', async () => {
+			// Same page and language in the chosen version when it exists there, then the same
+			// page in English, then the home page (see resolvePage).
+			const page = currentLocation(current, lang);
+			const target = await resolvePage(select.value, lang, page);
+			const exact = target === `/${select.value}${lang ? `/${lang}` : ''}${page}`;
+			location.href = target + (exact ? location.hash : '');
+		});
+	}
+</script>
+
+<style>
+	.version-select {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		color: var(--sl-color-gray-2);
+	}
+	select {
+		appearance: none;
+		padding: 0.2rem 1.6rem 0.2rem 0.55rem;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 999px;
+		background: var(--sl-color-bg-nav);
+		color: inherit;
+		font: inherit;
+		font-size: var(--sl-text-xs);
+		font-weight: 600;
+		cursor: pointer;
+	}
+	select:hover {
+		border-color: var(--sl-color-gray-4);
+		color: var(--sl-color-white);
+	}
+	select:focus-visible {
+		outline: 2px solid var(--sl-color-text-accent);
+		outline-offset: 2px;
+	}
+	svg {
+		position: absolute;
+		right: 0.45rem;
+		pointer-events: none;
+	}
+</style>

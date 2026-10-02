@@ -1,0 +1,62 @@
+---
+import Default from '@astrojs/starlight/components/Banner.astro';
+import { catalogue, version } from '../lib/version.mjs';
+import { t, pageLang } from '../lib/i18n.js';
+// Shown on every page of a version that is not the latest one. The build-time state
+// is corrected at runtime, so an old build learns about newer releases.
+const outdated = version !== catalogue.latest;
+const lang = pageLang(Astro);
+const prefix = Astro.locals.starlightRoute?.locale ?? '';
+const linkTemplate = t(lang, 'notice.latest');
+const home = `/${catalogue.latest}/${prefix ? prefix + '/' : ''}`;
+---
+
+<Default />
+<div
+	class="version-notice"
+	data-version-notice
+	data-current={version}
+	data-lang={prefix}
+	data-link-template={linkTemplate}
+	hidden={!outdated}
+	data-pagefind-ignore
+>
+	{t(lang, 'notice.reading')} <strong>{version}</strong>.
+	<a href={home} data-latest-link>{t(lang, 'notice.latest', { version: catalogue.latest })}</a>
+</div>
+
+<script>
+	import { loadCatalogue, resolvePage } from '../lib/versions-client.js';
+
+	for (const notice of document.querySelectorAll<HTMLElement>('[data-version-notice]')) {
+		const { current, lang = '', linkTemplate } = notice.dataset as Record<string, string>;
+		loadCatalogue().then(async (cat) => {
+			if (!cat) return;
+			notice.hidden = current === cat.latest;
+			if (notice.hidden) return;
+			const link = notice.querySelector<HTMLAnchorElement>('[data-latest-link]')!;
+			// Home of the latest version in this language, or in English if it has no translation.
+			link.href = await resolvePage(cat.latest, lang, '/');
+			link.textContent = linkTemplate.replace('{version}', cat.latest);
+		});
+	}
+</script>
+
+<style>
+	.version-notice {
+		padding: 0.6rem var(--sl-nav-pad-x);
+		background: #fff4ce;
+		color: #3d2f00;
+		border-bottom: 1px solid #e8d48a;
+		text-align: center;
+		font-size: var(--sl-text-sm);
+	}
+	.version-notice[hidden] {
+		display: none;
+	}
+	.version-notice a {
+		margin-left: 0.4rem;
+		color: #5a3e00;
+		font-weight: 650;
+	}
+</style>

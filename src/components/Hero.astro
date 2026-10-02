@@ -1,0 +1,148 @@
+---
+import { Code, LinkButton } from '@astrojs/starlight/components';
+import SheetPreview from './SheetPreview.astro';
+import { t, pageLang } from '../lib/i18n.js';
+
+const { data } = Astro.locals.starlightRoute.entry;
+const lang = pageLang(Astro);
+const { title = data.title, tagline, actions = [] } = data.hero ?? {};
+// Internal links in the frontmatter are written without the version base.
+const withBase = (href: string) => (href.startsWith('/') ? import.meta.env.BASE_URL.replace(/\/$/, '') + href : href);
+
+const sheetClass = `@ExcelSheet(title = "Customers",
+        preset = TablePreset.MEDIUM,
+        accentColor = "#1F4E79", autoFilter = true)
+public record CustomerRow(
+    @ExcelColumn(header = "Code", order = 10, width = 12)
+    String code,
+    @ExcelColumn(header = "Name", order = 20)
+    String name,
+    @ExcelColumn(header = "Customer since", order = 30,
+                 format = "dd/mm/yyyy")
+    LocalDate since,
+    @ExcelColumn(header = "Revenue", order = 40,
+                 format = "#,##0.00")
+    BigDecimal revenue) {
+}`;
+
+const call = `byte[] xlsx = sheetsmith.generate(List.of(
+        SheetData.of("Customers", CustomerRow.class, rows)));`;
+---
+
+<div class="hero">
+	<div class="intro">
+		<h1 id="_top">{title}</h1>
+		{tagline && <p class="tagline" set:html={tagline} />}
+		<div class="actions">
+			{actions.map(({ text, link, variant, icon }) => (
+				<LinkButton href={withBase(link)} variant={variant} icon={icon?.name}>
+					{text}
+				</LinkButton>
+			))}
+		</div>
+	</div>
+
+	<div class="demo">
+		<div class="pane code-pane">
+			<p class="caption">{t(lang, 'hero.classCaption')}</p>
+			<Code code={sheetClass} lang="java" title="CustomerRow.java" />
+			<Code code={call} lang="java" />
+		</div>
+		<div class="pane">
+			<p class="caption">{t(lang, 'hero.fileCaption')}</p>
+			<div class="file">
+				<div class="file-bar" aria-hidden="true">customers.xlsx</div>
+				<SheetPreview preset="MEDIUM" accent="#1F4E79" autoFilter />
+				<div class="tabs" aria-hidden="true"><span>Customers</span></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+	.hero {
+		display: grid;
+		gap: 2.5rem;
+		padding-block: 1rem 2rem;
+	}
+	.intro {
+		max-width: 40rem;
+	}
+	h1 {
+		margin: 0;
+		font-size: clamp(2.2rem, 5vw, 3.4rem);
+		line-height: 1.05;
+		font-weight: 760;
+		letter-spacing: -0.03em;
+		color: var(--sl-color-white);
+	}
+	.tagline {
+		margin: 1rem 0 0;
+		font-size: clamp(1.05rem, 2vw, 1.25rem);
+		line-height: 1.5;
+		color: var(--sl-color-gray-2);
+	}
+	.actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem 1rem;
+		margin-top: 1.75rem;
+	}
+	.demo {
+		display: grid;
+		gap: 1.5rem;
+		align-items: start;
+	}
+	@media (min-width: 60rem) {
+		.demo {
+			grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+		}
+	}
+	.pane {
+		min-width: 0;
+	}
+	.caption {
+		margin: 0 0 0.5rem;
+		font-size: var(--sl-text-sm);
+		font-weight: 600;
+		color: var(--sl-color-gray-3);
+	}
+	.code-pane :global(.expressive-code) {
+		margin: 0 0 0.75rem;
+	}
+	.code-pane :global(pre) {
+		font-size: 0.8125rem;
+	}
+	.file {
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 8px;
+		overflow: hidden;
+		background: #f3f4f6;
+		box-shadow: 0 12px 32px -18px rgb(10 30 60 / 0.45);
+	}
+	.file-bar {
+		padding: 0.45rem 0.75rem;
+		background: #1f4e79;
+		color: #ffffff;
+		font-size: var(--sl-text-xs);
+		font-weight: 600;
+	}
+	.file :global(.sheet) {
+		border: 0;
+		border-radius: 0;
+	}
+	.tabs {
+		padding: 0 0.5rem;
+		border-top: 1px solid #d4d7dc;
+		font-family: Calibri, Carlito, 'Segoe UI', Arial, sans-serif;
+		font-size: 0.75rem;
+	}
+	.tabs span {
+		display: inline-block;
+		padding: 0.3rem 0.9rem;
+		background: #ffffff;
+		color: #1f4e79;
+		font-weight: 700;
+		border-bottom: 2px solid #1f4e79;
+	}
+</style>

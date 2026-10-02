@@ -1,0 +1,420 @@
+{
+	"$comment": "Maps the sections of the manuals to site pages and defines the sidebar. Written for the structure of user manual 1.0.0. The \"it\" blocks hold the Italian texts; a missing text falls back to English.",
+	"groups": [
+		{
+			"label": "Getting started",
+			"items": [
+				{
+					"path": "getting-started/introduction",
+					"title": "Introduction",
+					"description": "What sheetsmith is, what it does and the scope of version {{release}}.",
+					"sections": ["1:intro", "1.1", "1.2", "1.3"],
+					"it": {
+						"title": "Introduzione",
+						"description": "Che cos'è sheetsmith, che cosa fa e il perimetro della versione {{release}}."
+					}
+				},
+				{
+					"path": "getting-started/installation",
+					"title": "Installation",
+					"description": "Requirements, Maven coordinates and packages.",
+					"sections": ["1.4", "1.5", "1.6"],
+					"it": {
+						"title": "Installazione",
+						"description": "Requisiti, coordinate Maven e package."
+					}
+				},
+				{
+					"path": "getting-started/quick-start",
+					"title": "Quick start",
+					"description": "Generate your first workbook in a Spring Boot or plain Java application.",
+					"sections": ["2"],
+					"it": {
+						"title": "Avvio rapido",
+						"description": "Generazione del primo file in un'applicazione Spring Boot o Java."
+					}
+				}
+			],
+			"it": { "label": "Primi passi" }
+		},
+		{
+			"label": "Concepts",
+			"items": [
+				{
+					"path": "concepts/sheet-classes",
+					"title": "Sheet classes and columns",
+					"description": "How a Java class describes a sheet and how its columns are ordered.",
+					"sections": ["3:intro", "3.1", "3.2", "3.3", "3.4", "3.5"],
+					"it": {
+						"title": "Classi foglio e colonne",
+						"description": "Come una classe Java descrive un foglio e come sono ordinate le sue colonne."
+					}
+				},
+				{
+					"path": "concepts/styles-and-cascade",
+					"title": "Styles, slots and the cascade",
+					"description": "Named styles, slots, roles and how styles combine.",
+					"sections": ["3.6", "3.7", "3.8", "3.9", "3.10", "3.11"],
+					"it": {
+						"title": "Stili, slot e cascata",
+						"description": "Stili con nome, slot, ruoli e combinazione degli stili."
+					}
+				},
+				{
+					"path": "concepts/generation",
+					"title": "How generation works",
+					"description": "Converters, the lifecycle of a generation, caching and thread safety.",
+					"sections": ["3.12", "3.13", "3.14"],
+					"it": {
+						"title": "Come avviene la generazione",
+						"description": "Converter, ciclo di vita di una generazione, cache e thread safety."
+					}
+				}
+			],
+			"it": { "label": "Concetti" }
+		},
+		{
+			"label": "Guides",
+			"items": [
+				{
+					"path": "guides/styling",
+					"title": "Styling",
+					"description": "Colours, alignment, borders, fills, fonts and data formats.",
+					"sections": ["6"],
+					"it": {
+						"title": "Formattazione",
+						"description": "Colori, allineamento, bordi, riempimenti, caratteri e formati dei dati."
+					}
+				},
+				{
+					"path": "guides/presets",
+					"title": "Presets",
+					"description": "Ready-made table styles generated from one accent colour.",
+					"sections": ["7"],
+					"mdx": {
+						"imports": ["import PresetGallery from '@components/PresetGallery.astro';"],
+						"replaceSection": {
+							"heading": "Visual examples",
+							"content": "Choose an accent to see how each preset colours the same table. The colours are computed with the same rules as the library.\n\n<PresetGallery />"
+						}
+					},
+					"it": {
+						"title": "Preset",
+						"description": "Stili di tabella pronti, generati a partire da un colore di accento.",
+						"mdx": {
+							"replaceSection": {
+								"heading": "Esempi visivi",
+								"content": "Scegliere un colore di accento per vedere come ciascun preset colora la stessa tabella. I colori sono calcolati con le stesse regole della libreria.\n\n<PresetGallery />"
+							}
+						}
+					}
+				},
+				{
+					"path": "guides/corporate-style",
+					"title": "Shared styles and corporate style",
+					"description": "Share named styles across every report of an organisation.",
+					"sections": ["8"],
+					"it": {
+						"title": "Stili condivisi e stile aziendale",
+						"description": "Condivisione degli stili con nome tra tutti i report di un'organizzazione."
+					}
+				},
+				{
+					"path": "guides/converters",
+					"title": "Converters",
+					"description": "Write any Java type into a cell.",
+					"sections": ["9:intro", "9.1", "9.2", "9.3", "9.4", "9.5", "9.6", "9.7", "9.9", "9.10", "9.11"],
+					"it": {
+						"title": "Converter",
+						"description": "Scrittura di qualsiasi tipo Java in una cella."
+					}
+				},
+				{
+					"path": "guides/converters-as-spring-beans",
+					"title": "Converters as Spring beans",
+					"description": "What changes when a converter is declared as a Spring bean.",
+					"sections": ["9.8"],
+					"it": {
+						"title": "Converter come bean Spring",
+						"description": "Che cosa cambia quando un converter è dichiarato come bean Spring."
+					}
+				},
+				{
+					"path": "guides/spring-boot",
+					"title": "Spring Boot integration",
+					"description": "What the auto-configuration does and how to customise it.",
+					"sections": ["10:intro", "10.1", "10.2", "10.4", "10.5"],
+					"it": {
+						"title": "Integrazione con Spring Boot",
+						"description": "Che cosa fa l'autoconfigurazione e come personalizzarla."
+					}
+				},
+				{
+					"path": "guides/validation-and-errors",
+					"title": "Validation and errors",
+					"description": "How to read an error, when validation happens and how to test sheet classes.",
+					"sections": ["11:intro", "11.1", "11.2", "11.4", "11.5", "11.6", "11.7"],
+					"it": {
+						"title": "Validazione ed errori",
+						"description": "Come leggere un errore, quando avviene la validazione e come testare le classi foglio."
+					}
+				},
+				{
+					"path": "guides/limits-and-performance",
+					"title": "Limits and performance",
+					"description": "Excel limits, large exports and known behaviours.",
+					"sections": ["12"],
+					"it": {
+						"title": "Limiti e prestazioni",
+						"description": "Limiti di Excel, esportazioni di grandi dimensioni e comportamenti noti."
+					}
+				}
+			],
+			"it": { "label": "Guide" }
+		},
+		{
+			"label": "Recipes",
+			"items": [
+				{
+					"path": "recipes/basics",
+					"title": "Basics",
+					"description": "Minimal export, several sheets, inherited columns.",
+					"sections": ["13:intro", "13.1", "13.2", "13.3", "13.18"],
+					"it": {
+						"title": "Fondamenti",
+						"description": "Esportazione minima, più fogli, colonne ereditate."
+					}
+				},
+				{
+					"path": "recipes/styling",
+					"title": "Styling recipes",
+					"description": "Totals rows, zebra rows, highlighted columns and framed tables.",
+					"sections": ["13.4", "13.5", "13.6", "13.7", "13.8"],
+					"it": {
+						"title": "Ricette di formattazione",
+						"description": "Righe di totale, righe alternate, colonne evidenziate e tabelle con cornice."
+					}
+				},
+				{
+					"path": "recipes/values-and-types",
+					"title": "Values and types",
+					"description": "Money, dates with time zones, codes as text.",
+					"sections": ["13.9", "13.10", "13.11"],
+					"it": {
+						"title": "Valori e tipi",
+						"description": "Importi, date con fuso orario, codici come testo."
+					}
+				},
+				{
+					"path": "recipes/output-and-delivery",
+					"title": "Output and delivery",
+					"description": "Files, e-mail attachments, servlets and large exports.",
+					"sections": ["13.12", "13.13", "13.17"],
+					"it": {
+						"title": "Output e consegna",
+						"description": "File, allegati e-mail, servlet ed esportazioni di grandi dimensioni."
+					}
+				},
+				{
+					"path": "recipes/setup-and-validation",
+					"title": "Setup and validation",
+					"description": "Startup validation, sheet names from data, plain Java containers.",
+					"sections": ["13.14", "13.15", "13.16"],
+					"it": {
+						"title": "Configurazione e validazione",
+						"description": "Validazione all'avvio, nomi dei fogli dai dati, container Java senza Spring."
+					}
+				},
+				{
+					"path": "recipes/complete-example",
+					"title": "Complete example",
+					"description": "A monthly case-handling report, end to end.",
+					"sections": ["13.19"],
+					"it": {
+						"title": "Esempio completo",
+						"description": "Un report mensile sulla gestione delle pratiche, dall'inizio alla fine."
+					}
+				}
+			],
+			"it": { "label": "Ricette" }
+		},
+		{
+			"label": "Reference",
+			"items": [
+				{
+					"label": "Annotations",
+					"items": [
+						{
+							"path": "reference/annotations",
+							"title": "Annotations",
+							"description": "Overview of the sheetsmith annotations.",
+							"sections": ["4:intro"],
+							"sidebarLabel": "Overview",
+							"it": {
+								"title": "Annotazioni",
+								"description": "Panoramica delle annotazioni di sheetsmith.",
+								"sidebarLabel": "Panoramica"
+							}
+						},
+						{
+							"path": "reference/annotations/excel-sheet",
+							"title": "@ExcelSheet",
+							"description": "Every attribute of @ExcelSheet.",
+							"sections": ["4.1"],
+							"it": {
+								"description": "Tutti gli attributi di @ExcelSheet."
+							}
+						},
+						{
+							"path": "reference/annotations/excel-column",
+							"title": "@ExcelColumn",
+							"description": "Every attribute of @ExcelColumn.",
+							"sections": ["4.2"],
+							"it": {
+								"description": "Tutti gli attributi di @ExcelColumn."
+							}
+						},
+						{
+							"path": "reference/annotations/style-annotations",
+							"title": "Style annotations",
+							"description": "@ExcelStyle, @ExcelStyleSheet and the slot annotations.",
+							"sections": ["4.3", "4.4", "4.5", "4.6", "4.7", "4.8"],
+							"it": {
+								"title": "Annotazioni di stile",
+								"description": "@ExcelStyle, @ExcelStyleSheet e le annotazioni degli slot."
+							}
+						}
+					],
+					"it": { "label": "Annotazioni" }
+				},
+				{
+					"label": "API",
+					"items": [
+						{
+							"path": "reference/api/sheetsmith",
+							"title": "Sheetsmith",
+							"description": "The generator and its builder.",
+							"sections": ["5:intro", "5.1", "5.2", "5.3"],
+							"it": {
+								"description": "Il generatore e il suo builder."
+							}
+						},
+						{
+							"path": "reference/api/sheet-data-and-defaults",
+							"title": "SheetData and defaults",
+							"description": "SheetData, SheetsmithDefaults and DocumentProperties.",
+							"sections": ["5.4", "5.5", "5.6"],
+							"it": {
+								"title": "SheetData e valori predefiniti",
+								"description": "SheetData, SheetsmithDefaults e DocumentProperties."
+							}
+						},
+						{
+							"path": "reference/api/exceptions",
+							"title": "Exceptions",
+							"description": "Configuration and generation exceptions.",
+							"sections": ["5.7"],
+							"it": {
+								"title": "Eccezioni",
+								"description": "Eccezioni di configurazione e di generazione."
+							}
+						}
+					]
+				},
+				{
+					"path": "reference/configuration-properties",
+					"title": "Configuration properties",
+					"description": "Every sheetsmith.* property.",
+					"sections": ["10.3"],
+					"it": {
+						"title": "Proprietà di configurazione",
+						"description": "Tutte le proprietà sheetsmith.*."
+					}
+				},
+				{
+					"path": "reference/error-codes",
+					"title": "Error codes",
+					"description": "Catalogue of the configuration errors V-01 to V-20.",
+					"sections": ["11.3"],
+					"it": {
+						"title": "Codici di errore",
+						"description": "Catalogo degli errori di configurazione da V-01 a V-20."
+					}
+				},
+				{
+					"path": "reference/value-domains",
+					"title": "Value domains",
+					"description": "Enum constants, numeric ranges and defaults.",
+					"sections": ["B"],
+					"it": {
+						"title": "Domini dei valori",
+						"description": "Costanti enum, intervalli numerici e valori predefiniti."
+					}
+				},
+				{
+					"path": "reference/class-census",
+					"title": "Class census",
+					"description": "Public and internal classes of each module.",
+					"sections": ["A"],
+					"it": {
+						"title": "Censimento delle classi",
+						"description": "Classi pubbliche e interne di ciascun modulo."
+					}
+				},
+				{
+					"path": "reference/glossary",
+					"title": "Glossary",
+					"description": "Terms used in this documentation.",
+					"sections": ["C"],
+					"it": {
+						"title": "Glossario",
+						"description": "Termini usati in questa documentazione."
+					}
+				}
+			],
+			"it": { "label": "Riferimento" }
+		},
+		{
+			"label": "Help",
+			"items": [
+				{
+					"path": "help/faq",
+					"title": "FAQ and troubleshooting",
+					"description": "Common problems and their solutions.",
+					"sections": ["14"],
+					"it": {
+						"title": "Domande frequenti e risoluzione dei problemi",
+						"description": "Problemi comuni e relative soluzioni."
+					}
+				}
+			],
+			"it": { "label": "Aiuto" }
+		},
+		{
+			"label": "Project",
+			"items": [
+				{
+					"path": "project/work-in-progress",
+					"title": "Work in progress",
+					"description": "Planned and evaluated evolutions.",
+					"sections": ["15"],
+					"it": {
+						"title": "Lavori in corso",
+						"description": "Evoluzioni pianificate e valutate."
+					}
+				},
+				{
+					"label": "Javadoc",
+					"link": "https://javadoc.io/doc/cloud.baldilorenzo/sheetsmith-core/{{release}}",
+					"newTab": true
+				},
+				{
+					"label": "Maven Central",
+					"link": "https://central.sonatype.com/namespace/cloud.baldilorenzo",
+					"newTab": true
+				}
+			],
+			"it": { "label": "Progetto" }
+		}
+	]
+}

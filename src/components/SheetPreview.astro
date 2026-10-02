@@ -1,0 +1,162 @@
+---
+import { presetVars, styleString } from '../lib/preset.js';
+import { t, pageLang } from '../lib/i18n.js';
+
+interface Props {
+	preset?: 'LIGHT' | 'MEDIUM' | 'DARK';
+	accent?: string;
+	title?: string;
+	headers?: string[];
+	rows?: string[][];
+	/** Indexes of right-aligned (numeric) columns. */
+	numeric?: number[];
+	autoFilter?: boolean;
+	label?: string;
+}
+
+const {
+	preset = 'MEDIUM',
+	accent = '#4472C4',
+	title = 'Customers',
+	headers = ['Code', 'Name', 'Customer since', 'Revenue'],
+	rows = [
+		['C-0041', 'Northwind Supplies', '12/03/2019', '184,250.00'],
+		['C-0057', 'Blue Harbor Ltd', '01/09/2020', '97,410.50'],
+		['C-0102', 'Greenfield Foods', '23/06/2021', '211,900.00'],
+		['C-0118', 'Atlas Engineering', '15/01/2023', '58,075.25'],
+		['C-0131', 'Riverside Clinic', '04/11/2024', '33,640.00'],
+	],
+	numeric = [3],
+	autoFilter = false,
+	label,
+} = Astro.props;
+
+const lang = pageLang(Astro);
+const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G'].slice(0, headers.length);
+---
+
+<figure
+	class="sheet"
+	data-preset={preset}
+	style={styleString(presetVars(preset, accent))}
+	aria-label={label ?? t(lang, 'sheet.label', { title, preset })}
+>
+	<table>
+		<thead>
+			<tr class="chrome">
+				<th class="corner" aria-hidden="true"></th>
+				{letters.map((l) => <th aria-hidden="true">{l}</th>)}
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="title-row">
+				<th class="num" aria-hidden="true">1</th>
+				<td colspan={headers.length}>{title}</td>
+			</tr>
+			<tr class="head-row">
+				<th class="num" aria-hidden="true">2</th>
+				{headers.map((h, i) => (
+					<td class:list={{ right: numeric.includes(i) }}>
+						{h}
+						{autoFilter && <span class="filter" aria-hidden="true">▾</span>}
+					</td>
+				))}
+			</tr>
+			{rows.map((r, n) => (
+				<tr class:list={['body-row', n % 2 === 0 ? 'odd' : 'even']}>
+					<th class="num" aria-hidden="true">{n + 3}</th>
+					{r.map((c, i) => <td class:list={{ right: numeric.includes(i) }}>{c}</td>)}
+				</tr>
+			))}
+		</tbody>
+	</table>
+</figure>
+
+<style>
+	.sheet {
+		margin: 0;
+		overflow-x: auto;
+		background: #ffffff;
+		border: 1px solid #c8ccd2;
+		border-radius: 6px;
+		color: #000000;
+		font-family: Calibri, Carlito, 'Segoe UI', Arial, sans-serif;
+		font-size: 0.8125rem;
+		line-height: 1.2;
+	}
+	table {
+		display: table;
+		width: 100%;
+		margin: 0;
+		border-collapse: collapse;
+		border: 0;
+		background: #ffffff;
+	}
+	td,
+	th {
+		padding: 0.32rem 0.6rem;
+		border: 1px solid #e1e3e6;
+		text-align: left;
+		white-space: nowrap;
+		color: inherit;
+		background: transparent;
+		font-weight: 400;
+	}
+	.chrome th,
+	th.num {
+		background: #f3f4f6;
+		color: #5f6670;
+		font-size: 0.6875rem;
+		text-align: center;
+		border-color: #d4d7dc;
+	}
+	th.num {
+		width: 2.2rem;
+	}
+	.right {
+		text-align: right;
+	}
+	.title-row td {
+		color: var(--title-fg);
+		font-weight: 700;
+		font-size: 1.05rem;
+		padding-block: 0.45rem;
+	}
+	.head-row td {
+		background: var(--head-bg);
+		color: var(--head-fg);
+		font-weight: 700;
+		border-bottom: 2px solid var(--head-line);
+	}
+	[data-preset='LIGHT'] .head-row td {
+		border-bottom-color: var(--head-line);
+	}
+	.filter {
+		display: inline-block;
+		margin-left: 0.4rem;
+		padding: 0 0.15rem;
+		font-size: 0.625rem;
+		line-height: 1;
+		color: #3b3f45;
+		background: #ffffff;
+		border: 1px solid #b9bdc3;
+		vertical-align: 1px;
+	}
+	.body-row td {
+		border-bottom: 1px solid var(--row-line);
+	}
+	[data-preset='MEDIUM'] .body-row td {
+		border: 1px solid var(--grid);
+	}
+	.body-row.odd td {
+		background: var(--odd-bg);
+		color: var(--odd-fg);
+	}
+	.body-row.even td {
+		background: var(--even-bg);
+		color: var(--even-fg);
+	}
+	[data-preset='LIGHT'] .body-row td {
+		border-bottom-color: var(--row-line);
+	}
+</style>

@@ -1,0 +1,124 @@
+/* sheetsmith documentation theme */
+:root {
+	--sl-font: 'Schibsted Grotesk Variable', 'Segoe UI', system-ui, sans-serif;
+	--sl-font-mono: 'JetBrains Mono Variable', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+	--sl-content-width: 46rem;
+
+	/* Dark theme */
+	--sl-color-accent-low: #132a42;
+	--sl-color-accent: #5b8fd6;
+	--sl-color-accent-high: #cddcf1;
+	--sl-color-white: #ffffff;
+	--sl-color-gray-1: #e9edf3;
+	--sl-color-gray-2: #c2cad5;
+	--sl-color-gray-3: #8c98a8;
+	--sl-color-gray-4: #5a6676;
+	--sl-color-gray-5: #3a4555;
+	--sl-color-gray-6: #252e3b;
+	--sl-color-black: #161c24;
+}
+
+:root[data-theme='light'] {
+	--sl-color-accent-low: #dae3f3;
+	--sl-color-accent: #1f4e79;
+	--sl-color-accent-high: #143552;
+	--sl-color-white: #121a23;
+	--sl-color-gray-1: #1d2834;
+	--sl-color-gray-2: #384556;
+	--sl-color-gray-3: #5c6879;
+	--sl-color-gray-4: #8a95a4;
+	--sl-color-gray-5: #c4cbd4;
+	--sl-color-gray-6: #e6eaf0;
+	--sl-color-gray-7: #f3f5f8;
+	--sl-color-black: #ffffff;
+}
+
+.sl-markdown-content h1,
+.sl-markdown-content h2,
+.sl-markdown-content h3,
+h1#_top {
+	letter-spacing: -0.015em;
+}
+
+.sl-markdown-content h2 {
+	padding-top: 0.5rem;
+	border-top: 1px solid var(--sl-color-gray-6);
+}
+.sl-markdown-content > div > h2:first-child,
+.sl-markdown-content h2:first-child {
+	border-top: 0;
+	padding-top: 0;
+}
+
+/* Tables: read like a well-kept spreadsheet, not like plain HTML. */
+:root[data-has-hero] {
+	--sl-content-width: 72rem;
+}
+
+.sl-markdown-content table:not(.sheet > table) {
+	font-size: var(--sl-text-sm);
+	border-collapse: collapse;
+}
+.sl-markdown-content :not(.sheet > table) > thead th {
+	background: var(--sl-color-accent-low);
+	color: var(--sl-color-white);
+	font-weight: 650;
+	text-align: left;
+}
+.sl-markdown-content table:not(.sheet > table) :is(th, td) {
+	border: 1px solid var(--sl-color-gray-5);
+	padding: 0.45rem 0.7rem;
+	vertical-align: top;
+}
+.sl-markdown-content table:not(.sheet > table) tbody tr:nth-child(even) td {
+	background: color-mix(in srgb, var(--sl-color-accent-low) 35%, transparent);
+}
+
+.sl-markdown-content code:not(pre code) {
+	font-size: 0.875em;
+	padding: 0.1em 0.3em;
+	border-radius: 4px;
+}
+
+/* Home page */
+.steps-home {
+	display: grid;
+	gap: 1.25rem;
+	padding: 0;
+	margin: 1rem 0 0;
+	list-style: none;
+	counter-reset: step;
+}
+@media (min-width: 50rem) {
+	.steps-home {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+}
+.steps-home li {
+	counter-increment: step;
+	padding-top: 0.75rem;
+	border-top: 2px solid var(--sl-color-accent);
+	color: var(--sl-color-gray-2);
+	line-height: 1.55;
+}
+.steps-home li::before {
+	content: counter(step);
+	display: block;
+	margin-bottom: 0.35rem;
+	font-size: 1.6rem;
+	font-weight: 760;
+	color: var(--sl-color-text-accent);
+}
+.steps-home strong {
+	color: var(--sl-color-white);
+}
+.presets-home {
+	display: grid;
+	gap: 1rem;
+	margin-block: 1.25rem;
+}
+@media (min-width: 72rem) {
+	.presets-home {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+}
