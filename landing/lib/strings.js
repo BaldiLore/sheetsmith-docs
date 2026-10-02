@@ -4,7 +4,7 @@
 // The code samples are not translated: they are the same Java code in every language.
 const STRINGS = {
 	en: {
-		'meta.title': 'sheetsmith: styled Excel files from annotated Java classes',
+		'meta.title': 'Sheetsmith: spreadsheets, forged in Java.',
 		'meta.description':
 			'Annotation-driven Excel generation for Spring Boot, built on Apache POI. Describe a table once, pass a list of objects, get an .xlsx file back.',
 		'nav.home': 'sheetsmith home',
@@ -73,7 +73,6 @@ const STRINGS = {
 		'footer.license': 'Apache License 2.0',
 	},
 	it: {
-		'meta.title': 'sheetsmith: file Excel formattati da classi Java annotate',
 		'meta.description':
 			'Generazione di file Excel guidata dalle annotazioni per Spring Boot, basata su Apache POI. Descrivi la tabella una volta, passa una lista di oggetti, ricevi il file .xlsx.',
 		'nav.home': 'Home di sheetsmith',
