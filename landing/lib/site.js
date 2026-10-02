@@ -13,20 +13,17 @@ export const latest = catalogue.latest;
 
 const versionDir = join(process.cwd(), 'versions', latest);
 
-/** First page of the page map of the latest release: where the documentation starts. */
-function firstPage(items) {
-	for (const item of items) {
-		if (item.path) return item.path;
-		if (item.items) {
-			const found = firstPage(item.items);
-			if (found) return found;
-		}
-	}
-	return null;
+/** Page of the documentation opened by the "Get started" buttons. */
+const START = 'getting-started/introduction';
+
+/** Whether the page map of the latest release has a page at `path`. */
+function hasPage(items, path) {
+	return items.some((item) => item.path === path || (item.items && hasPage(item.items, path)));
 }
 const pages = JSON.parse(readFileSync(join(versionDir, 'pages.json'), 'utf-8'));
-const start = firstPage(pages.groups);
-if (!start) throw new Error(`versions/${latest}/pages.json has no page`);
+if (!hasPage(pages.groups, START)) {
+	throw new Error(`versions/${latest}/pages.json has no page "${START}", the target of the "Get started" buttons of the landing page`);
+}
 
 /** Languages of the landing page: Italian only when the latest release has an Italian manual. */
 export const languages = existsSync(join(versionDir, 'manual.it.md')) ? ['en', 'it'] : ['en'];
@@ -36,7 +33,7 @@ export const landingUrl = (lang) => (lang === 'en' ? '/' : `/${lang}/`);
 
 /** External and documentation links of the landing page. */
 export const links = (lang) => ({
-	docs: `/${latest}/${lang === 'en' ? '' : `${lang}/`}${start}/`,
+	docs: `/${latest}/${lang === 'en' ? '' : `${lang}/`}${START}/`,
 	javadoc: `https://javadoc.io/doc/cloud.baldilorenzo/sheetsmith-core/${latest}`,
 	maven: `https://central.sonatype.com/artifact/cloud.baldilorenzo/sheetsmith-spring-boot-starter/${latest}`,
 	github: 'https://github.com/BaldiLore/sheetsmith',

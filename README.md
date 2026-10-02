@@ -522,7 +522,7 @@ own configuration, `astro.landing.config.mjs`, without Starlight.
 | Source | Use |
 | --- | --- |
 | `versions.json` | The latest release: version badge, Maven dependency, and links to its documentation, Javadoc and Maven Central page. |
-| `versions/<latest>/pages.json` | The first page of the documentation, target of the "Read the docs" buttons. |
+| `versions/<latest>/pages.json` | Checks that the page `getting-started/introduction`, target of the "Get started" buttons, exists: the build stops when it does not. |
 | `versions/<latest>/manual.it.md` | Whether the Italian landing page (`/it/`) is published. |
 
 A new release therefore needs no change to the landing page: `npm run build` publishes it
@@ -546,8 +546,13 @@ of a new release changes, update `landing/lib/samples.js`; when a line of the sh
 is added or removed, update `showcaseRegions` in the same file, which maps each line to the
 part of the sheet it controls.
 
-The theme follows the one chosen in the documentation, saved by Starlight in the browser,
-and otherwise the theme of the system.
+The header has a theme menu (dark, light, auto) and, when the site is in more than one
+language, a language menu, each showing the current choice. The theme menu shares its choice
+with the theme menu of the documentation, saved by Starlight in the browser, so the theme
+stays the same when moving between the landing page and the documentation.
+
+The buttons to the documentation open in the same tab; those to Javadoc, Maven Central and
+GitHub open in a new tab.
 
 ### Working on it
 

@@ -112,21 +112,74 @@ a:hover {
 .topbar-side {
 	display: flex;
 	align-items: center;
-	gap: 18px;
+	gap: 12px;
 }
 .badge {
+	display: inline-flex;
+	align-items: center;
+	min-height: 36px;
 	font-family: var(--font-mono);
 	font-size: 12px;
-	padding: 4px 8px;
+	padding: 0 10px;
 	border: 1px solid var(--gray-5);
 	border-radius: 4px;
 	color: var(--gray-2);
 }
-.lang-link {
+.topbar-side {
+	flex-wrap: wrap;
+}
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+}
+/* Header menus (theme, language): a native select with an icon and a caret. */
+.picker {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
 	color: var(--gray-2);
-	text-decoration: none;
+}
+.picker:hover {
+	color: var(--text);
+}
+.picker select {
+	appearance: none;
+	min-height: 36px;
+	padding: 0 30px 0 32px;
+	border: 1px solid var(--gray-5);
+	border-radius: 6px;
+	background: transparent;
+	color: inherit;
+	font: inherit;
 	font-size: 14px;
 	font-weight: 500;
+	cursor: pointer;
+}
+.picker select option {
+	background: var(--bg);
+	color: var(--text);
+}
+.picker svg {
+	position: absolute;
+	width: 16px;
+	height: 16px;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.8;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	pointer-events: none;
+}
+.picker-icon {
+	left: 10px;
+}
+.picker-caret {
+	right: 9px;
 }
 
 /* Hero */
@@ -617,16 +670,13 @@ h1 {
 .footer-inner {
 	display: flex;
 	flex-wrap: wrap;
-	justify-content: space-between;
-	gap: 16px;
+	justify-content: center;
+	gap: 10px;
+	margin-block: 0;
 	padding-block: 28px;
 	font-size: 14px;
 	color: var(--gray-3);
-}
-.footer-links {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 20px;
+	text-align: center;
 }
 
 @media (prefers-reduced-motion: reduce) {

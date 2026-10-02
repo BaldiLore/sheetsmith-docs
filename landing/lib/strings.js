@@ -9,11 +9,16 @@ const STRINGS = {
 			'Annotation-driven Excel generation for Spring Boot, built on Apache POI. Describe a table once, pass a list of objects, get an .xlsx file back.',
 		'nav.home': 'sheetsmith home',
 		'nav.version': 'Latest release',
+		'nav.language': 'Select language',
+		'nav.theme': 'Select theme',
+		'theme.dark': 'Dark',
+		'theme.light': 'Light',
+		'theme.auto': 'Auto',
 		'hero.eyebrow': 'Spring Boot · Apache POI · Java 17+',
 		'hero.headline': 'Spreadsheets, forged in Java.',
 		'hero.lead':
 			'Describe a table once with annotations, pass a list of objects, get an .xlsx file back: title, header, rows, styles, presets and formats included.',
-		'cta.docs': 'Read the docs',
+		'cta.docs': 'Get started',
 		'cta.javadoc': 'Javadoc',
 		'cta.maven': 'Maven Central',
 		'cta.github': 'GitHub',
@@ -65,9 +70,7 @@ const STRINGS = {
 		's2.text': 'Classes, records and inherited fields. Only annotated fields are exported.',
 		's3.title': 'Call generate',
 		's3.text': 'Pass one or more sheets, get the workbook back.',
-		'steps.cta': 'Read the user guide',
 		'footer.license': 'Apache License 2.0',
-		'footer.docs': 'Docs',
 	},
 	it: {
 		'meta.title': 'sheetsmith: file Excel formattati da classi Java annotate',
@@ -75,9 +78,14 @@ const STRINGS = {
 			'Generazione di file Excel guidata dalle annotazioni per Spring Boot, basata su Apache POI. Descrivi la tabella una volta, passa una lista di oggetti, ricevi il file .xlsx.',
 		'nav.home': 'Home di sheetsmith',
 		'nav.version': 'Ultima release',
+		'nav.language': 'Seleziona lingua',
+		'nav.theme': 'Seleziona tema',
+		'theme.dark': 'Scuro',
+		'theme.light': 'Chiaro',
+		'theme.auto': 'Auto',
 		'hero.lead':
 			'Descrivi la tabella una volta sola con le annotazioni, passa una lista di oggetti e ricevi il file .xlsx: titolo, intestazione, righe, stili, preset e formati compresi.',
-		'cta.docs': 'Leggi la documentazione',
+		'cta.docs': 'Inizia',
 		'copy.label': 'Copia la dipendenza',
 		'copy.idle': 'Copia',
 		'copy.done': 'Copiato',
@@ -124,8 +132,7 @@ const STRINGS = {
 		's2.text': 'Classi, record e campi ereditati. Vengono esportati solo i campi annotati.',
 		's3.title': 'Chiama generate',
 		's3.text': 'Passa uno o più fogli, ricevi il workbook.',
-		'steps.cta': 'Leggi la guida utente',
-		'footer.docs': 'Documentazione',
+
 	},
 };
 
