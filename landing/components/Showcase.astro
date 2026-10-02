@@ -1,0 +1,200 @@
+---
+// The annotated class next to the sheet it produces. Hovering or focusing a line of the class
+// highlights the part of the sheet it controls; the preset and accent buttons restyle the
+// sheet and update the class. Without JavaScript the page shows MEDIUM with dark blue.
+import { Code } from 'astro:components';
+import { t, strings } from '../lib/strings.js';
+import { sheetStyle } from '../lib/sheet.js';
+import {
+	showcaseClass,
+	showcaseRegions,
+	showcaseRows,
+	showcaseHeaders,
+	showcaseTitle,
+	showcaseSheet,
+} from '../lib/samples.js';
+
+interface Props {
+	lang: string;
+}
+const { lang } = Astro.props;
+
+const PRESETS = ['LIGHT', 'MEDIUM', 'DARK'];
+const ACCENTS = ['#1F4E79', '#4472C4', '#70AD47', '#C00000'];
+const preset = 'MEDIUM';
+const accent = '#1F4E79';
+const columns = ['A', 'B', 'C', 'D'];
+const numeric = [2, 3];
+
+// Marks the lines of the class with the region they control, and the two values the
+// buttons change, so that the browser script can find them.
+const markLines = {
+	line(node, line) {
+		const region = showcaseRegions[line];
+		if (!region) return;
+		node.properties['data-region'] = region;
+		node.properties.tabindex = '0';
+	},
+	span(node, line, col, lineElement, token) {
+		const text = token?.content ?? '';
+		if (line === 3 && PRESETS.some((p) => text.includes(p))) node.properties['data-bind'] = 'preset';
+		if (line === 4 && text.includes(accent)) node.properties['data-bind'] = 'accent';
+	},
+};
+
+const captions = Object.fromEntries(
+	Object.entries(strings(lang))
+		.filter(([key]) => key.startsWith('region.'))
+		.map(([key, text]) => [key.slice('region.'.length), text]),
+);
+---
+
+<section class="showcase" aria-labelledby="showcase-title" data-showcase data-captions={JSON.stringify(captions)} data-hint={t(lang, 'showcase.hint')}>
+	<div class="showcase-head">
+		<div class="showcase-intro">
+			<h2 id="showcase-title">{t(lang, 'showcase.title')}</h2>
+			<p class="caption" data-caption aria-live="polite">{t(lang, 'showcase.hint')}</p>
+		</div>
+		<div class="controls">
+			<div class="control">
+				<span class="control-label" id="preset-label">{t(lang, 'showcase.preset')}</span>
+				<div class="pills" role="group" aria-labelledby="preset-label">
+					{PRESETS.map((p) => (
+						<button type="button" class="pill" data-preset={p} aria-pressed={String(p === preset)}>{p}</button>
+					))}
+				</div>
+			</div>
+			<div class="control">
+				<span class="control-label" id="accent-label">{t(lang, 'showcase.accent')}</span>
+				<div class="swatches" role="group" aria-labelledby="accent-label">
+					{ACCENTS.map((a) => (
+						<button
+							type="button"
+							class="swatch"
+							data-accent={a}
+							style={`--swatch:${a}`}
+							aria-pressed={String(a === accent)}
+							aria-label={`${t(lang, `accent.${a}`)} ${a}`}
+							title={t(lang, `accent.${a}`)}
+						></button>
+					))}
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="stage">
+		<div class="stage-code">
+			<div class="code-file">InvoiceRow.java</div>
+			<Code code={showcaseClass} lang="java" theme="github-dark-default" transformers={[markLines]} />
+		</div>
+		<div class="stage-sheet">
+			<figure class="sheet" data-sheet style={sheetStyle(preset, accent)} aria-label={t(lang, 'showcase.sheetLabel')}>
+				<div class="sheet-scroll">
+					<table>
+						<thead>
+							<tr>
+								<th class="chrome corner" data-cell="chrome" aria-hidden="true"></th>
+								{columns.map((c) => <th class="chrome" data-cell="chrome" data-col={c} aria-hidden="true">{c}</th>)}
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th class="chrome num" data-cell="chrome" aria-hidden="true">1</th>
+								<td class="title" data-cell="title" colspan={columns.length}>{showcaseTitle}</td>
+							</tr>
+							<tr>
+								<th class="chrome num" data-cell="chrome" aria-hidden="true">2</th>
+								{showcaseHeaders.map((h, i) => (
+									<td class="head" data-cell="header" data-col={columns[i]}>
+										<span class="head-cell">
+											<span>{h}</span>
+											<svg class="filter" viewBox="0 0 15 15" aria-hidden="true">
+												<rect x="0.5" y="0.5" width="14" height="14" rx="1.5" fill="#FFFFFF" stroke="#8A8A8A"></rect>
+												<path d="M4.5 6.5l3 3 3-3" fill="none" stroke="#3A3A3A" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
+											</svg>
+										</span>
+									</td>
+								))}
+							</tr>
+							{showcaseRows.map((row, r) => (
+								<tr class={(r + 1) % 2 === 0 ? 'even' : 'odd'}>
+									<th class="chrome num" data-cell="chrome" aria-hidden="true">{r + 3}</th>
+									{row.map((value, i) => (
+										<td class:list={['data', { right: numeric.includes(i) }]} data-cell="row" data-col={columns[i]}>{value}</td>
+									))}
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</div>
+				<div class="sheet-tabs" aria-hidden="true"><span data-cell="tab">{showcaseSheet}</span></div>
+			</figure>
+		</div>
+	</div>
+</section>
+
+<script>
+	import { sheetVars } from '../lib/sheet.js';
+
+	const root = document.querySelector<HTMLElement>('[data-showcase]');
+	if (root) {
+		const sheet = root.querySelector<HTMLElement>('[data-sheet]')!;
+		const caption = root.querySelector<HTMLElement>('[data-caption]')!;
+		const captions: Record<string, string> = JSON.parse(root.dataset.captions ?? '{}');
+		const hint = root.dataset.hint ?? '';
+		const cells = [...root.querySelectorAll<HTMLElement>('[data-cell]')];
+		const lines = [...root.querySelectorAll<HTMLElement>('[data-region]')];
+		const state = { preset: 'MEDIUM', accent: '#1F4E79' };
+
+		// Which cells a region of the class controls.
+		const controls = (region: string, cell: HTMLElement) => {
+			const kind = cell.dataset.cell;
+			if (region === 'preset' || region === 'accent') return kind === 'title' || kind === 'header' || kind === 'row';
+			if (region === 'title') return kind === 'title';
+			if (region === 'filter') return kind === 'header';
+			if (region === 'tab') return kind === 'tab';
+			return region === `col${cell.dataset.col}`;
+		};
+
+		const highlight = (region: string | null) => {
+			sheet.classList.toggle('has-focus', region !== null);
+			for (const cell of cells) cell.classList.toggle('lit', region !== null && controls(region, cell));
+			for (const line of lines) line.classList.toggle('active', line.dataset.region === region);
+			caption.textContent = region ? (captions[region] ?? hint) : hint;
+		};
+
+		const render = () => {
+			for (const [name, value] of Object.entries(sheetVars(state.preset, state.accent))) {
+				sheet.style.setProperty(name, value);
+			}
+			for (const el of root.querySelectorAll<HTMLElement>('[data-bind="preset"]')) {
+				el.textContent = (el.textContent ?? '').replace(/LIGHT|MEDIUM|DARK/, state.preset);
+			}
+			for (const el of root.querySelectorAll<HTMLElement>('[data-bind="accent"]')) {
+				el.textContent = (el.textContent ?? '').replace(/#[0-9A-F]{6}/i, state.accent);
+			}
+			for (const b of root.querySelectorAll<HTMLElement>('[data-preset]')) {
+				b.setAttribute('aria-pressed', String(b.dataset.preset === state.preset));
+			}
+			for (const b of root.querySelectorAll<HTMLElement>('[data-accent]')) {
+				b.setAttribute('aria-pressed', String(b.dataset.accent === state.accent));
+			}
+		};
+
+		root.addEventListener('click', (event) => {
+			const button = (event.target as HTMLElement).closest<HTMLElement>('[data-preset], [data-accent]');
+			if (!button) return;
+			if (button.dataset.preset) state.preset = button.dataset.preset;
+			if (button.dataset.accent) state.accent = button.dataset.accent;
+			render();
+		});
+		for (const line of lines) {
+			const region = line.dataset.region ?? null;
+			line.addEventListener('mouseenter', () => highlight(region));
+			line.addEventListener('focus', () => highlight(region));
+			line.addEventListener('mouseleave', () => highlight(null));
+			line.addEventListener('blur', () => highlight(null));
+		}
+	}
+</script>

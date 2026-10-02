@@ -3,12 +3,12 @@
 //   versions/<id>/manual.md      the English user manual (source of truth)
 //   versions/<id>/manual.it.md   the Italian translation (optional)
 //   versions/<id>/pages.json     which manual sections go to which page, and the sidebar
-//   templates/home.mdx           the English home page, shared by every version
-//   templates/home.it.mdx        the Italian home page, shared by every version
 //
 // <id> is the library release the manual documents, as listed in versions.json.
 //
 // Output: versions/<id>/.generated/ (never edit it: it is rewritten at every run).
+// The root of a version has no page of its own: it redirects to the first page of the page
+// map, in each language. The landing page of the site is built separately (landing/).
 //
 //   npm run generate -- 1.0.0 [--allow-incomplete-translation]
 //
@@ -149,8 +149,8 @@ function validate(pages, chapters) {
 
 /** Languages of the site. English is the root language, published without prefix. */
 export const LANGUAGES = [
-	{ id: 'en', manual: 'manual.md', home: 'home.mdx', prefix: '' },
-	{ id: 'it', manual: 'manual.it.md', home: 'home.it.mdx', prefix: 'it' },
+	{ id: 'en', manual: 'manual.md', prefix: '' },
+	{ id: 'it', manual: 'manual.it.md', prefix: 'it' },
 ];
 export const ALLOW_INCOMPLETE_FLAG = '--allow-incomplete-translation';
 
@@ -183,7 +183,7 @@ export function generate(version, { allowIncompleteTranslation = false } = {}) {
 	for (const f of ['manual.md', 'pages.json']) {
 		if (!existsSync(join(dir, f))) throw new Error(`versions/${version}/${f} is missing`);
 	}
-	// {{release}} in pages.json and in the home templates: the release documented by this version.
+	// {{release}} in pages.json: the release documented by this version.
 	const fill = (s) => s.replaceAll('{{release}}', version);
 
 	const config = JSON.parse(fill(readFileSync(join(dir, 'pages.json'), 'utf-8')));
@@ -220,20 +220,19 @@ export function generate(version, { allowIncompleteTranslation = false } = {}) {
 		}
 		warnings.push(`${lang.manual} is incomplete, its pages with missing sections are shown in English:\n    - ${list.join('\n    - ')}`);
 	}
-	if (!existsSync(join(ROOT, 'templates', 'home.mdx'))) throw new Error('templates/home.mdx is missing');
-
 	const out = join(dir, '.generated');
 	rmSync(out, { recursive: true, force: true });
 
 	const languages = [];
 	const summary = [];
+	// The root of the version, in each language, leads to the first page of the page map.
+	const redirects = {};
 	for (const lang of LANGUAGES) {
 		const manual = manuals.get(lang.id);
 		if (!manual) continue;
-		const home = join(ROOT, 'templates', lang.home);
-		if (!existsSync(home)) throw new Error(`templates/${lang.home} is missing`);
 		const result = writeLanguage(lang, manual, pages, en.chapters, join(out, 'docs', lang.prefix));
-		writeFileSync(join(out, 'docs', lang.prefix, 'index.mdx'), fill(readFileSync(home, 'utf-8')));
+		const prefix = lang.prefix ? `/${lang.prefix}` : '';
+		redirects[`${prefix}/`] = `${prefix}/${pages[0].path}/`;
 		languages.push(lang.id);
 		summary.push(`${lang.id} ${result.written}/${pages.length}`);
 		if (result.unresolved.size) {
@@ -243,6 +242,7 @@ export function generate(version, { allowIncompleteTranslation = false } = {}) {
 
 	writeFileSync(join(out, 'sidebar.json'), JSON.stringify(toSidebar(config.groups), null, '\t'));
 	writeFileSync(join(out, 'languages.json'), JSON.stringify(languages));
+	writeFileSync(join(out, 'redirects.json'), JSON.stringify(redirects, null, '\t'));
 
 	const sections = [...en.chapters.values()].reduce((n, c) => n + c.sections.size, 0);
 	console.log(`docs ${version}: ${pages.length} pages from ${en.chapters.size} chapters and ${sections} sections (pages per language: ${summary.join(', ')})`);

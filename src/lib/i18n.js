@@ -2,8 +2,6 @@
 // The texts of Starlight itself (search, table of contents, navigation) are built in.
 const STRINGS = {
 	en: {
-		'hero.classCaption': 'You write the class',
-		'hero.fileCaption': 'sheetsmith writes the file',
 		'notice.reading': 'You are reading the documentation of sheetsmith',
 		'notice.latest': 'See the latest version ({version})',
 		'version.label': 'Documentation version',
@@ -22,8 +20,6 @@ const STRINGS = {
 		'sheet.label': 'Excel sheet "{title}" generated with the {preset} preset',
 	},
 	it: {
-		'hero.classCaption': 'La classe annotata',
-		'hero.fileCaption': 'Il file generato da sheetsmith',
 		'notice.reading': 'Questa è la documentazione di sheetsmith',
 		'notice.latest': 'Consulta la versione più recente ({version})',
 		'version.label': 'Versione della documentazione',

@@ -51,10 +51,6 @@ h1#_top {
 }
 
 /* Tables: read like a well-kept spreadsheet, not like plain HTML. */
-:root[data-has-hero] {
-	--sl-content-width: 72rem;
-}
-
 .sl-markdown-content table:not(.sheet > table) {
 	font-size: var(--sl-text-sm);
 	border-collapse: collapse;
@@ -78,47 +74,4 @@ h1#_top {
 	font-size: 0.875em;
 	padding: 0.1em 0.3em;
 	border-radius: 4px;
-}
-
-/* Home page */
-.steps-home {
-	display: grid;
-	gap: 1.25rem;
-	padding: 0;
-	margin: 1rem 0 0;
-	list-style: none;
-	counter-reset: step;
-}
-@media (min-width: 50rem) {
-	.steps-home {
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-	}
-}
-.steps-home li {
-	counter-increment: step;
-	padding-top: 0.75rem;
-	border-top: 2px solid var(--sl-color-accent);
-	color: var(--sl-color-gray-2);
-	line-height: 1.55;
-}
-.steps-home li::before {
-	content: counter(step);
-	display: block;
-	margin-bottom: 0.35rem;
-	font-size: 1.6rem;
-	font-weight: 760;
-	color: var(--sl-color-text-accent);
-}
-.steps-home strong {
-	color: var(--sl-color-white);
-}
-.presets-home {
-	display: grid;
-	gap: 1rem;
-	margin-block: 1.25rem;
-}
-@media (min-width: 72rem) {
-	.presets-home {
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-	}
 }

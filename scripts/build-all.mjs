@@ -1,8 +1,9 @@
-// Generates and builds every version listed in versions.json into dist/<version>/, then adds
-// the shared root files: version catalogue, redirect to the latest version, 404 page.
+// Generates and builds every version listed in versions.json into dist/<version>/, then builds
+// the landing page at the root of dist/ and adds the shared root files: version catalogue,
+// redirects of /latest/..., 404 page.
 //
 //   npm run build [-- --allow-incomplete-translation]
-import { readFileSync, writeFileSync, rmSync, copyFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, rmSync, copyFileSync, cpSync } from 'node:fs';
 import { execSync } from 'node:child_process';
 import { generate, ALLOW_INCOMPLETE_FLAG } from './generate.mjs';
 
@@ -36,17 +37,17 @@ for (const id of catalogue.versions) {
 	execSync('npx astro build', { stdio: 'inherit', env: { ...process.env, DOCS_VERSION: id } });
 }
 
+// Landing page: a separate Astro build (astro.landing.config.mjs), copied to the root of dist/.
+console.log('\n=== Landing page ===');
+for (const dir of ['.astro', 'node_modules/.astro', '.landing-dist']) rmSync(dir, { recursive: true, force: true });
+execSync('npx astro build --config astro.landing.config.mjs', { stdio: 'inherit' });
+cpSync('.landing-dist', 'dist', { recursive: true });
+rmSync('.landing-dist', { recursive: true, force: true });
+
 const latest = `/${catalogue.latest}/`;
 writeFileSync('dist/versions.json', JSON.stringify(catalogue, null, '\t'));
-// Cloudflare: "/" and "/latest/..." always lead to the newest version.
-writeFileSync('dist/_redirects', `/ ${latest} 302\n/latest/* ${latest}:splat 302\n`);
-// Fallback for hosts without _redirects support (and for the local server).
-writeFileSync(
-	'dist/index.html',
-	`<!doctype html><meta charset="utf-8"><title>sheetsmith</title>` +
-		`<meta http-equiv="refresh" content="0; url=${latest}"><link rel="canonical" href="${latest}">` +
-		`<a href="${latest}">sheetsmith documentation</a>`,
-);
+// Cloudflare: "/latest/..." always leads to the newest version. "/" is the landing page.
+writeFileSync('dist/_redirects', `/latest/* ${latest}:splat 302\n`);
 copyFileSync(`dist/${catalogue.latest}/404.html`, 'dist/404.html');
 copyFileSync('public/favicon.svg', 'dist/favicon.svg');
 console.log(`\nBuilt ${catalogue.versions.length} version(s), latest ${catalogue.latest}.`);

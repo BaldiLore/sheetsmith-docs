@@ -1,0 +1,196 @@
+---
+// Landing page of the site, published at "/" in English and at "/it/" in Italian when the
+// latest release has an Italian manual. It is built separately from the documentation (see
+// astro.landing.config.mjs) and links to the latest release.
+import '@fontsource-variable/schibsted-grotesk';
+import '@fontsource-variable/jetbrains-mono';
+import '../styles/landing.css';
+import logo from '../../src/assets/logo.svg?raw';
+import CodeBlock from '../components/CodeBlock.astro';
+import Showcase from '../components/Showcase.astro';
+import { t } from '../lib/strings.js';
+import { latest, languages, landingUrl, links } from '../lib/site.js';
+import * as samples from '../lib/samples.js';
+
+export function getStaticPaths() {
+	return languages.map((lang) => ({ params: { lang: lang === 'en' ? undefined : lang }, props: { lang } }));
+}
+
+const { lang } = Astro.props;
+const href = links(lang);
+const other = languages.find((l) => l !== lang);
+const LANGUAGE_NAMES = { en: 'English', it: 'Italiano' };
+const site = Astro.site?.toString().replace(/\/$/, '') ?? '';
+const dependency = samples.dependency.replace('{{release}}', latest);
+---
+
+<!doctype html>
+<html lang={lang}>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{t(lang, 'meta.title')}</title>
+		<meta name="description" content={t(lang, 'meta.description')} />
+		<link rel="canonical" href={site + landingUrl(lang)} />
+		{languages.map((l) => <link rel="alternate" hreflang={l} href={site + landingUrl(l)} />)}
+		<link rel="alternate" hreflang="x-default" href={site + '/'} />
+		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+		<meta property="og:title" content={t(lang, 'meta.title')} />
+		<meta property="og:description" content={t(lang, 'meta.description')} />
+		<meta property="og:url" content={site + landingUrl(lang)} />
+		<meta property="og:type" content="website" />
+		<!-- Same theme as the documentation: the choice saved by Starlight, else the system one. -->
+		<script is:inline>
+			(() => {
+				let theme;
+				try {
+					theme = localStorage.getItem('starlight-theme');
+				} catch {}
+				if (theme !== 'light' && theme !== 'dark') {
+					theme = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+				}
+				document.documentElement.dataset.theme = theme;
+			})();
+		</script>
+	</head>
+	<body>
+		<header class="topbar">
+			<div class="wrap topbar-inner">
+				<a class="brand" href={landingUrl(lang)} aria-label={t(lang, 'nav.home')}>
+					<span class="brand-logo" set:html={logo} />
+					<span class="brand-name">sheetsmith</span>
+				</a>
+				<div class="topbar-side">
+					<span class="badge" title={t(lang, 'nav.version')}>v{latest}</span>
+					{other && <a class="lang-link" href={landingUrl(other)} lang={other} hreflang={other}>{LANGUAGE_NAMES[other]}</a>}
+				</div>
+			</div>
+		</header>
+
+		<main>
+			<section class="wrap hero">
+				<div class="hero-text">
+					<p class="eyebrow">{t(lang, 'hero.eyebrow')}</p>
+					<h1>{t(lang, 'hero.headline')}</h1>
+					<p class="lead">{t(lang, 'hero.lead')}</p>
+					<div class="actions">
+						<a class="button primary" href={href.docs}>{t(lang, 'cta.docs')}</a>
+						<a class="button" href={href.javadoc}>{t(lang, 'cta.javadoc')}</a>
+						<a class="button" href={href.maven}>{t(lang, 'cta.maven')}</a>
+						<a class="button" href={href.github}>
+							<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"></path></svg>
+							{t(lang, 'cta.github')}
+						</a>
+					</div>
+				</div>
+				<div class="dependency">
+					<div class="dependency-bar">
+						<span>pom.xml</span>
+						<button type="button" class="copy" data-copy={dependency} data-done={t(lang, 'copy.done')} aria-label={t(lang, 'copy.label')}>{t(lang, 'copy.idle')}</button>
+					</div>
+					<pre><code>{dependency}</code></pre>
+				</div>
+			</section>
+
+			<div class="wrap">
+				<Showcase lang={lang} />
+			</div>
+
+			<section class="features" aria-labelledby="features-title">
+				<div class="wrap features-inner">
+					<h2 id="features-title" class="section-title">{t(lang, 'features.title')}</h2>
+
+					<div class="feature">
+						<div class="feature-text">
+							<p class="feature-label">{t(lang, 'f1.label')}</p>
+							<h3>{t(lang, 'f1.title')}</h3>
+							<p>{t(lang, 'f1.text')}</p>
+						</div>
+						<div class="feature-code">
+							<CodeBlock code={samples.output} lang="java" file="ReportService.java" />
+						</div>
+					</div>
+
+					<div class="feature reverse">
+						<div class="feature-text">
+							<p class="feature-label">{t(lang, 'f2.label')}</p>
+							<h3>{t(lang, 'f2.title')}</h3>
+							<p>{t(lang, 'f2.text')}</p>
+						</div>
+						<div class="feature-code">
+							<CodeBlock code={samples.styleSheet} lang="java" file="CorporateStyles.java" />
+							<CodeBlock code={samples.styleSheetUse} lang="java" file="InvoiceLine.java" />
+						</div>
+					</div>
+
+					<div class="feature">
+						<div class="feature-text">
+							<p class="feature-label">{t(lang, 'f3.label')}</p>
+							<h3>{t(lang, 'f3.title')}</h3>
+							<p>{t(lang, 'f3.text')}</p>
+						</div>
+						<div class="feature-code">
+							<CodeBlock code={samples.beanConverter} lang="java" file="MoneyConverter.java" />
+							<CodeBlock code={samples.fieldConverter} lang="java" file="DocumentRow.java" />
+						</div>
+					</div>
+
+					<div class="feature reverse">
+						<div class="feature-text">
+							<p class="feature-label">{t(lang, 'f4.label')}</p>
+							<h3>{t(lang, 'f4.title')}</h3>
+							<p>{t(lang, 'f4.text')}</p>
+						</div>
+						<div class="feature-code">
+							<CodeBlock code={samples.springService} lang="java" file="ReportService.java" />
+							<CodeBlock code={samples.springProperties} lang="yaml" file="application.yml" />
+							<CodeBlock code={samples.plainJava} lang="java" file={t(lang, 'f4.plain')} />
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="wrap steps" aria-labelledby="steps-title">
+				<h2 id="steps-title" class="section-title">{t(lang, 'steps.title')}</h2>
+				<ol class="step-list">
+					{[1, 2, 3].map((n) => (
+						<li class="step">
+							<span class="step-number">{n}</span>
+							<h3>{t(lang, `s${n}.title`)}</h3>
+							<p>{t(lang, `s${n}.text`)}</p>
+						</li>
+					))}
+				</ol>
+				<a class="button primary" href={href.docs}>{t(lang, 'steps.cta')}</a>
+			</section>
+		</main>
+
+		<footer class="footer">
+			<div class="wrap footer-inner">
+				<span>sheetsmith {latest} · {t(lang, 'footer.license')}</span>
+				<nav class="footer-links" aria-label="Footer">
+					<a href={href.github}>GitHub</a>
+					<a href={href.docs}>{t(lang, 'footer.docs')}</a>
+					{other && <a href={landingUrl(other)} lang={other} hreflang={other}>{LANGUAGE_NAMES[other]}</a>}
+					<a href={href.author}>baldilorenzo.it</a>
+				</nav>
+			</div>
+		</footer>
+
+		<script>
+			// Copy button of the Maven dependency.
+			for (const button of document.querySelectorAll<HTMLButtonElement>('[data-copy]')) {
+				const idle = button.textContent;
+				button.addEventListener('click', async () => {
+					try {
+						await navigator.clipboard.writeText(button.dataset.copy ?? '');
+						button.textContent = button.dataset.done ?? idle;
+						setTimeout(() => (button.textContent = idle), 1800);
+					} catch {
+						// Clipboard not available (insecure context): the text stays selectable.
+					}
+				});
+			}
+		</script>
+	</body>
+</html>

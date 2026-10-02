@@ -2,7 +2,8 @@
 //
 //   npm run dev [-- <version>] [--allow-incomplete-translation]
 //
-// Pages are regenerated whenever a manual, pages.json or a home template change.
+// Pages are regenerated whenever a manual or pages.json change.
+// The landing page has its own development server: npm run dev:landing
 import { readFileSync, watch, existsSync } from 'node:fs';
 import { spawn } from 'node:child_process';
 import { generate, LANGUAGES, ALLOW_INCOMPLETE_FLAG } from './generate.mjs';
@@ -30,7 +31,7 @@ if (!regenerate()) process.exit(1);
 let timer;
 const watched = [
 	`versions/${version}/pages.json`,
-	...LANGUAGES.flatMap((l) => [`versions/${version}/${l.manual}`, `templates/${l.home}`]),
+	...LANGUAGES.map((l) => `versions/${version}/${l.manual}`),
 ];
 // A language added while the server runs (a new manual.it.md) needs a restart.
 for (const file of watched.filter((f) => existsSync(f))) {

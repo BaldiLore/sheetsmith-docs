@@ -37,6 +37,11 @@ const sidebar = JSON.parse(readFileSync(`${generatedDir}/sidebar.json`, 'utf-8')
 // With English only, no language selector is shown.
 const languages = JSON.parse(readFileSync(`${generatedDir}/languages.json`, 'utf-8'));
 const LABELS = { en: 'English', it: 'Italiano' };
+// The root of the version has no page: it leads to the first page of the documentation.
+// The landing page of the site, at "/", is a separate build (astro.landing.config.mjs).
+const redirects = Object.fromEntries(
+	Object.entries(JSON.parse(readFileSync(`${generatedDir}/redirects.json`, 'utf-8'))).map(([from, to]) => [from, base + to]),
+);
 const locales =
 	languages.length > 1
 		? Object.fromEntries(languages.map((l) => [l === 'en' ? 'root' : l, { label: LABELS[l], lang: l }]))
@@ -46,6 +51,7 @@ export default defineConfig({
 	site: 'https://sheetsmith.baldilorenzo.cloud',
 	base,
 	outDir: `./dist/${version}`,
+	redirects,
 	markdown: { processor: satteri({ hastPlugins: [baseLinks(base)] }) },
 	vite: { plugins: [devRootRedirect] },
 	integrations: [
@@ -61,7 +67,6 @@ export default defineConfig({
 				'./src/styles/theme.css',
 			],
 			components: {
-				Hero: './src/components/Hero.astro',
 				SiteTitle: './src/components/SiteTitle.astro',
 				Banner: './src/components/Banner.astro',
 			},

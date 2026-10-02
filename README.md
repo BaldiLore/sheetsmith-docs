@@ -12,8 +12,13 @@ The site is in English, and optionally in Italian for the releases whose manual 
 translated. English pages are published without language prefix (`/1.0.0/guides/presets/`),
 Italian pages under `it/` (`/1.0.0/it/guides/presets/`).
 
-The site is built with [Astro](https://astro.build) and its documentation theme
-[Starlight](https://starlight.astro.build), and is published as static files on Cloudflare.
+The root of the site (`/`, and `/it/` in Italian) is the landing page of the library: a page
+of its own, not versioned, that presents sheetsmith and links to the documentation of the
+latest release.
+
+The documentation is built with [Astro](https://astro.build) and its documentation theme
+[Starlight](https://starlight.astro.build); the landing page is built with Astro alone. The
+whole site is published as static files on Cloudflare.
 
 ## Contents
 
@@ -25,6 +30,7 @@ The site is built with [Astro](https://astro.build) and its documentation theme
 - [Adding a version](#adding-a-version)
 - [Page map reference (`pages.json`)](#page-map-reference-pagesjson)
 - [Languages](#languages)
+- [Landing page](#landing-page)
 - [Customising the site](#customising-the-site)
 - [Deployment on Cloudflare](#deployment-on-cloudflare)
 - [Troubleshooting](#troubleshooting)
@@ -51,7 +57,8 @@ A fresh copy of the project contains no documentation version. Add the first one
 npm run dev
 ```
 
-and open `http://localhost:4321`.
+and open `http://localhost:4321`. The landing page has its own development server,
+`npm run dev:landing` (see [Landing page](#landing-page)).
 
 ## Commands
 
@@ -62,11 +69,13 @@ All commands are run from the project root.
 | `npm install` | Installs the dependencies. |
 | `npm run generate -- <version>` | Generates the pages of one version and checks its page map against its manuals. |
 | `npm run dev [-- <version>]` | Starts the development server for one version. |
+| `npm run dev:landing` | Starts the development server for the landing page. |
 | `npm run build` | Generates and builds every version, ready for publication. |
 | `npm run serve` | Serves the built site with every version, as it will be published. |
 
 The commands `generate`, `dev`, `build` and `serve` are scripts of this project, kept in
-`scripts/`. They are described below.
+`scripts/`. They are described below. `dev:landing` runs Astro directly, with the
+configuration of the landing page.
 
 `generate`, `dev` and `build` accept the option `--allow-incomplete-translation`, described
 in [Incomplete translations](#incomplete-translations). It is passed after `--`, for example
@@ -91,8 +100,8 @@ Turns the sources of one version into the pages read by Astro. It does not produ
 5. Composes each page, in each language, from the sections assigned to it, converts the
    internal links of the manual into site links, and applies the MDX replacements declared
    in the page map.
-6. Writes the pages, the home page of each language, the sidebar and the list of languages
-   to `versions/<version>/.generated/`, after deleting its previous content.
+6. Writes the pages, the sidebar, the list of languages and the redirects of the root of the
+   version to `versions/<version>/.generated/`, after deleting its previous content.
 
 **When to use it.** It is a local check, mainly used when a version or a translation is
 added: it tells in a few seconds whether the page map covers the whole manual and whether
@@ -107,8 +116,8 @@ Script: `scripts/dev.mjs`.
 Generates the pages of one version and starts the Astro development server for it, at
 `http://localhost:4321/<version>/`. Without an argument it uses the latest version.
 
-- The pages are regenerated whenever a manual, `pages.json` or a home template change, and
-  the browser refreshes. A manual added while the server runs, such as a new `manual.it.md`,
+- The pages are regenerated whenever a manual or `pages.json` change, and the browser
+  refreshes. A manual added while the server runs, such as a new `manual.it.md`,
   requires a restart.
 - Changes to the theme and the components in `src/` are applied immediately.
 - `/` and `/latest/...` redirect to the version being served, as in production.
@@ -127,9 +136,11 @@ Builds the complete site into `dist/`:
 2. For each version, runs the generation (with the same checks as `generate`) and the Astro
    build, which writes the version to `dist/<version>/`. Every version is rebuilt from its
    sources at every run.
-3. Writes the files shared by all versions at the root of `dist/`: `versions.json`, the
-   redirects (`_redirects`), a fallback `index.html` redirecting to the latest version, the
-   `404.html` page and the favicon.
+3. Builds the landing page (see [Landing page](#landing-page)) and copies it to the root of
+   `dist/`: `index.html`, `it/index.html` when the latest version is in Italian, and its
+   assets in `_astro/`.
+4. Writes the files shared by all versions at the root of `dist/`: `versions.json`, the
+   redirects (`_redirects`), the `404.html` page and the favicon.
 
 The build stops at the first error, so an incomplete site is never published.
 
@@ -140,11 +151,12 @@ used before `serve` to review the whole site.
 
 Script: `scripts/serve.mjs`.
 
-Serves the content of `dist/` at `http://localhost:4321`, with every version, the redirects
-of `/` and `/latest/...`, and the 404 page, as Cloudflare does.
+Serves the content of `dist/` at `http://localhost:4321`, with the landing page, every
+version, the redirects of `/latest/...`, and the 404 page, as Cloudflare does.
 
 **When to use it.** After `build`, to review the site exactly as it will be published,
-including switching between versions.
+including the links from the landing page to the documentation and switching between
+versions.
 
 ## How the site works
 
@@ -154,7 +166,8 @@ including switching between versions.
 versions/<version>/manual.md      ─┐
 versions/<version>/manual.it.md   ─┤
 versions/<version>/pages.json     ─┼─ generate ─▶ versions/<version>/.generated/ ─ Astro ─▶ dist/<version>/
-templates/home.mdx, home.it.mdx   ─┘
+                                  ─┘
+landing/                          ─── Astro ─▶ dist/ (index.html, it/index.html)
 ```
 
 1. **Generation.** `scripts/generate.mjs` splits the manual into site pages following the
@@ -198,16 +211,21 @@ search index. No server-side code runs when the site is visited.
 
 - **Version selector.** Next to the site title. When another version is chosen, the selector
   opens, in order of preference: the same page in the same language, keeping the section;
-  the same page in English, when that version is not in Italian; the home page of that
-  version.
+  the same page in English, when that version is not in Italian; the root of that version,
+  which leads to its first page.
 - **Notice for older versions.** Every page of a version other than the latest shows a notice
-  with a link to the home page of the latest version, in the same language when available.
+  with a link to the root of the latest version, in the same language when available.
 - **Always up to date.** `versions.json` is also published at the root of the site, and the
   selector and the notice read it when a page is opened. A version built in the past
   therefore lists the versions published after it, without being rebuilt.
-- **Stable entry points.** `/` redirects to the latest version, and `/latest/<page>` to the
-  same page in the latest version. These are the links to use in the README of the library,
-  on Maven Central and anywhere a link must always lead to the current documentation.
+- **Stable entry points.** `/` is the landing page, which links to the latest version, and
+  `/latest/<page>` leads to the same page in the latest version. `/latest/` leads to the
+  start of the latest documentation. These are the links to use in the README of the
+  library, on Maven Central and anywhere a link must always lead to the current
+  documentation.
+- **Root of a version.** `/<version>/` has no page of its own: it redirects to the first page
+  of the page map (`/<version>/getting-started/introduction/` with the page map of 1.0.0),
+  and `/<version>/it/` to the same page in Italian.
 
 ### Generation rules
 
@@ -224,8 +242,8 @@ search index. No server-side code runs when the site is visited.
   Links to anchors that do not exist are left unchanged and reported as a warning.
 - **Appendices** are written `## Appendix A: ...` in English and `## Appendice A: ...` in
   Italian.
-- **Home page.** `templates/home.mdx` (and `templates/home.it.mdx` for Italian) is copied
-  into every version, with `{{release}}` replaced by the version.
+- **Root of the version.** No page is generated for it: `redirects.json` records, for each
+  language, the first page of the page map, and the Astro build turns it into a redirect.
 
 ## Project structure
 
@@ -239,9 +257,8 @@ search index. No server-side code runs when the site is visited.
 │       ├── pages.json       Page map and sidebar of the version
 │       └── .generated/      Generated pages and sidebar (not committed)
 ├── templates/
-│   ├── home.mdx             Home page, shared by every version
-│   ├── home.it.mdx          Italian home page, shared by every version
 │   └── pages.json           Page map for the structure of manual 1.0.0
+├── landing/                 Landing page of the site (see "Landing page")
 ├── scripts/
 │   ├── generate.mjs         Generation of the pages of one version
 │   ├── dev.mjs              Development server
@@ -254,18 +271,18 @@ search index. No server-side code runs when the site is visited.
 │   ├── styles/theme.css     Colours, fonts and table styles
 │   └── content.config.ts    Loads the generated pages of the version being built
 ├── public/favicon.svg       Favicon
-├── astro.config.mjs         Astro and Starlight configuration
+├── astro.config.mjs         Astro and Starlight configuration of the documentation
+├── astro.landing.config.mjs Astro configuration of the landing page
 └── package.json             Dependencies and commands
 ```
 
-`dist/`, `.astro/`, `node_modules/` and `versions/*/.generated/` are produced by the commands
-and are excluded from version control.
+`dist/`, `.landing-dist/`, `.astro/`, `node_modules/` and `versions/*/.generated/` are
+produced by the commands and are excluded from version control.
 
 ### Components (`src/components/`)
 
 | Component | Role |
 | --- | --- |
-| `Hero.astro` | Top of the home page: title, actions, and an annotated class next to the sheet it produces. Replaces the Starlight component of the same name. |
 | `SiteTitle.astro` | Site title followed by the version selector. Replaces the Starlight component. |
 | `VersionSelect.astro` | Version selector. |
 | `Banner.astro` | Notice shown on versions other than the latest. Replaces the Starlight component. |
@@ -280,7 +297,7 @@ and are excluded from version control.
 | `i18n.js` | Texts of the project's components in English and Italian. The texts of Starlight itself are built in. |
 | `versions-client.js` | Browser-side helpers of the selector and the notice: reads the published `versions.json` and finds the best page of another version, in the current language when it exists. |
 | `base-links.mjs` | Adds the version to the internal links of the pages during the build. |
-| `preset.js` | Colour computation of the presets: the same rules as the library, including half-to-even rounding, so that the gallery shows exactly the colours of the generated files. |
+| `preset.js` | Colour computation of the presets: the same rules as the library, including half-to-even rounding, so that the gallery shows exactly the colours of the generated files. Also used by the landing page. |
 
 ## Adding a version
 
@@ -412,8 +429,8 @@ the same level. A page with `mdx` is published as MDX, that is Markdown with com
 
 ### Placeholder
 
-`{{release}}` is replaced by the version in every text of `pages.json` and in
-`templates/home.mdx`, for example in the links to the Javadoc of the release.
+`{{release}}` is replaced by the version in every text of `pages.json`, for example in the
+links to the Javadoc of the release.
 
 ## Languages
 
@@ -434,7 +451,8 @@ When a version is in both languages:
   the texts of the project's components are in the language of the page;
 - each language has its own search index.
 
-`/` and `/latest/...` always lead to the English pages.
+`/latest/...` always leads to the English pages. The landing page is in English at `/`,
+and in Italian at `/it/` when the latest version is in Italian.
 
 ### The Italian manual
 
@@ -472,8 +490,8 @@ The option applies to every version of the build. To publish with it from Cloudf
 | --- | --- |
 | Titles, descriptions and sidebar labels of the pages | `it` blocks in `pages.json` |
 | Labels of the sidebar groups and links | `it` blocks in `pages.json` |
-| Home page | `templates/home.it.mdx` |
-| Texts of the components (notice, version selector, home, preset gallery) | `src/lib/i18n.js` |
+| Landing page | `landing/lib/strings.js` |
+| Texts of the components (notice, version selector, preset gallery) | `src/lib/i18n.js` |
 
 A missing `it` text falls back to English. The only required one is the replacement of a
 page with components: a page with `mdx.replaceSection` needs `it.mdx.replaceSection`, with
@@ -493,11 +511,60 @@ the heading of the replaced section as written in the Italian manual:
 
 The imports of `mdx.imports` are shared by both languages.
 
+## Landing page
+
+The landing page is the page at the root of the site. It is not part of any version: there
+is one landing page, always pointing to the latest release, built from `landing/` with its
+own configuration, `astro.landing.config.mjs`, without Starlight.
+
+### What it reads at build time
+
+| Source | Use |
+| --- | --- |
+| `versions.json` | The latest release: version badge, Maven dependency, and links to its documentation, Javadoc and Maven Central page. |
+| `versions/<latest>/pages.json` | The first page of the documentation, target of the "Read the docs" buttons. |
+| `versions/<latest>/manual.it.md` | Whether the Italian landing page (`/it/`) is published. |
+
+A new release therefore needs no change to the landing page: `npm run build` publishes it
+with the links of the new latest version.
+
+### Files
+
+| File | Content |
+| --- | --- |
+| `landing/pages/[...lang].astro` | The page, generated once per language. |
+| `landing/components/Showcase.astro` | The annotated class next to the sheet it produces, with the choice of preset and accent colour, and the highlight of the part of the sheet controlled by each line of the class. |
+| `landing/components/CodeBlock.astro` | A code sample with its file name, highlighted at build time. |
+| `landing/lib/samples.js` | Every code sample of the page, and the data of the sample sheet. |
+| `landing/lib/strings.js` | Texts of the page in English and Italian. |
+| `landing/lib/sheet.js` | Colours of the sample sheet, from `src/lib/preset.js`. |
+| `landing/lib/site.js` | Latest release, languages and links, read at build time. |
+| `landing/styles/landing.css` | Styles of the page, with the colours of `src/styles/theme.css`. |
+
+The code samples use the public API of the library as written in its sources. When the API
+of a new release changes, update `landing/lib/samples.js`; when a line of the showcase class
+is added or removed, update `showcaseRegions` in the same file, which maps each line to the
+part of the sheet it controls.
+
+The theme follows the one chosen in the documentation, saved by Starlight in the browser,
+and otherwise the theme of the system.
+
+### Working on it
+
+```bash
+npm run dev:landing
+```
+
+starts the development server of the landing page at `http://localhost:4322`, next to the
+one of the documentation (`npm run dev`, port 4321). Its links to the documentation lead to
+the documentation server only in the built site: to check them, use `npm run build` and
+`npm run serve`.
+
 ## Customising the site
 
 | What | Where |
 | --- | --- |
-| Home page text, examples and links | `templates/home.mdx` and `templates/home.it.mdx`, and `src/components/Hero.astro` for the top part |
+| Landing page: texts, code samples, styles | `landing/` (see [Landing page](#landing-page)) |
 | Texts of the components | `src/lib/i18n.js` |
 | Colours, fonts, tables | `src/styles/theme.css` |
 | Logo and favicon | `src/assets/logo.svg`, `public/favicon.svg` |
@@ -509,7 +576,8 @@ scale), defined in `theme.css` for the dark and the light theme. The fonts, Schi
 Grotesk for the text and JetBrains Mono for the code, are dependencies of the project and
 are served by the site itself.
 
-Changes to these files apply to every version at the next publication.
+Changes to these files apply to every version, and to the landing page, at the next
+publication.
 
 ## Deployment on Cloudflare
 
@@ -521,9 +589,9 @@ Changes to these files apply to every version at the next publication.
 | Custom domain | `sheetsmith.baldilorenzo.cloud` |
 
 The output directory must be `dist`, not the folder of a single version: the root of `dist`
-holds `_redirects`, `versions.json` and `404.html`, which are shared by every version.
-`_redirects` sends `/` and `/latest/...` to the latest version with a temporary redirect
-(302), because its target changes at every release.
+holds the landing page, `_redirects`, `versions.json` and `404.html`, which are shared by
+every version. `_redirects` sends `/latest/...` to the latest version with a temporary
+redirect (302), because its target changes at every release.
 
 ## Troubleshooting
 
@@ -539,6 +607,6 @@ holds `_redirects`, `versions.json` and `404.html`, which are shared by every ve
 | `manual.it.md does not have the sections of manual.md` | The Italian manual has missing or extra sections. Align it with the English manual, or use `--allow-incomplete-translation` (see [Incomplete translations](#incomplete-translations)). |
 | `"it.mdx.replaceSection" is missing in pages.json` | A page with components has no Italian replacement. Add it (see [Italian texts outside the manual](#italian-texts-outside-the-manual)). |
 | `section "..." to replace not found` | The heading in `replaceSection` does not match the heading of the section in the manual of that language. |
-| `templates/home.it.mdx is missing` | A version has an Italian manual but the Italian home template is missing. |
 | `The collection "i18n" does not exist or is empty` | Informational warning of Starlight: the site has a single language. It can be ignored. |
 | The selector does not open other versions with `npm run dev` | The development server serves one version. Use `npm run build` and `npm run serve`. |
+| The buttons of the landing page lead to a missing page with `npm run dev:landing` | The development server of the landing page does not serve the documentation. Use `npm run build` and `npm run serve`. |

@@ -1,5 +1,6 @@
 # build output
 dist/
+.landing-dist/
 # generated pages of each version (scripts/generate.mjs)
 versions/*/.generated/
 # generated types

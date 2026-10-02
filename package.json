@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "node scripts/dev.mjs",
+    "dev:landing": "astro dev --config astro.landing.config.mjs",
     "generate": "node scripts/generate.mjs",
     "build": "node scripts/build-all.mjs",
     "serve": "node scripts/serve.mjs",
