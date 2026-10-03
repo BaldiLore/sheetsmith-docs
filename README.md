@@ -395,7 +395,7 @@ A page whose `path` is also the parent of other pages (`reference/annotations` t
 **External link**, with an optional `it` block holding its Italian `label`:
 
 ```json
-{ "label": "Javadoc", "link": "https://javadoc.io/doc/cloud.baldilorenzo/sheetsmith-core/{{release}}", "newTab": true }
+{ "label": "Javadoc", "link": "https://javadoc.io/doc/cloud.baldilorenzo.sheetsmith/sheetsmith-core/{{release}}", "newTab": true }
 ```
 
 ### Section keys

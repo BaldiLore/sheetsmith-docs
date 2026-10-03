@@ -405,12 +405,12 @@
 				},
 				{
 					"label": "Javadoc",
-					"link": "https://javadoc.io/doc/cloud.baldilorenzo/sheetsmith-core/{{release}}",
+					"link": "https://javadoc.io/doc/cloud.baldilorenzo.sheetsmith/sheetsmith-core/{{release}}",
 					"newTab": true
 				},
 				{
 					"label": "Maven Central",
-					"link": "https://central.sonatype.com/namespace/cloud.baldilorenzo",
+					"link": "https://central.sonatype.com/namespace/cloud.baldilorenzo.sheetsmith",
 					"newTab": true
 				}
 			],

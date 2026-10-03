@@ -57,7 +57,7 @@ export const showcaseTitle = 'Q3 2026 invoices';
 export const showcaseSheet = 'Invoices';
 
 export const dependency = `<dependency>
-    <groupId>cloud.baldilorenzo</groupId>
+    <groupId>cloud.baldilorenzo.sheetsmith</groupId>
     <artifactId>sheetsmith-spring-boot-starter</artifactId>
     <version>{{release}}</version>
 </dependency>`;

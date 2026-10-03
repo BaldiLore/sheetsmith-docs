@@ -80,7 +80,7 @@ Planned and evaluated evolutions are listed in [section 15](#15-work-in-progress
 
 ### 1.5 Modules and coordinates
 
-The library is published as three Maven artifacts under the group `cloud.baldilorenzo`.
+The library is published as three Maven artifacts under the group `cloud.baldilorenzo.sheetsmith`.
 
 | Artifact | Content | Depends on Spring |
 | --- | --- | --- |
@@ -94,7 +94,7 @@ The library is published as three Maven artifacts under the group `cloud.baldilo
 
 ```xml
 <dependency>
-    <groupId>cloud.baldilorenzo</groupId>
+    <groupId>cloud.baldilorenzo.sheetsmith</groupId>
     <artifactId>sheetsmith-spring-boot-starter</artifactId>
     <version>1.0.0</version>
 </dependency>
@@ -104,13 +104,13 @@ The library is published as three Maven artifacts under the group `cloud.baldilo
 
 ```xml
 <dependency>
-    <groupId>cloud.baldilorenzo</groupId>
+    <groupId>cloud.baldilorenzo.sheetsmith</groupId>
     <artifactId>sheetsmith-core</artifactId>
     <version>1.0.0</version>
 </dependency>
 ```
 
-With Gradle, the coordinates are the same: `implementation("cloud.baldilorenzo:sheetsmith-spring-boot-starter:1.0.0")` or `implementation("cloud.baldilorenzo:sheetsmith-core:1.0.0")`.
+With Gradle, the coordinates are the same: `implementation("cloud.baldilorenzo.sheetsmith:sheetsmith-spring-boot-starter:1.0.0")` or `implementation("cloud.baldilorenzo.sheetsmith:sheetsmith-core:1.0.0")`.
 
 The `sheetsmith-spring-boot-autoconfigure` artifact is not meant to be imported directly.
 

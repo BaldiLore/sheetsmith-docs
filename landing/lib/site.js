@@ -34,8 +34,8 @@ export const landingUrl = (lang) => (lang === 'en' ? '/' : `/${lang}/`);
 /** External and documentation links of the landing page. */
 export const links = (lang) => ({
 	docs: `/${latest}/${lang === 'en' ? '' : `${lang}/`}${START}/`,
-	javadoc: `https://javadoc.io/doc/cloud.baldilorenzo/sheetsmith-core/${latest}`,
-	maven: `https://central.sonatype.com/artifact/cloud.baldilorenzo/sheetsmith-spring-boot-starter/${latest}`,
+	javadoc: `https://javadoc.io/doc/cloud.baldilorenzo.sheetsmith/sheetsmith-core/${latest}`,
+	maven: `https://central.sonatype.com/artifact/cloud.baldilorenzo.sheetsmith/sheetsmith-spring-boot-starter/${latest}`,
 	github: 'https://github.com/BaldiLore/sheetsmith',
 	author: 'https://baldilorenzo.it',
 });
