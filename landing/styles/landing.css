@@ -225,6 +225,18 @@ h1 {
 	gap: 12px;
 	margin-top: 32px;
 }
+/* Narrow screens: the four buttons on two rows of two, all the same width. */
+@media (max-width: 586px) {
+	.actions {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+	}
+	.actions .button {
+		justify-content: center;
+		padding-inline: 12px;
+		text-align: center;
+	}
+}
 .button {
 	display: inline-flex;
 	align-items: center;
@@ -476,7 +488,7 @@ h1 {
 	width: 100%;
 	min-width: 500px;
 	border-collapse: collapse;
-	table-layout: fixed;
+	table-layout: auto;
 }
 .sheet col:first-child,
 .sheet .corner {
@@ -572,8 +584,14 @@ h1 {
 .features-inner {
 	display: flex;
 	flex-direction: column;
-	gap: 88px;
-	padding-block: 96px;
+	gap: 56px;
+	padding-block: 72px;
+}
+@media (min-width: 1008px) {
+	.features-inner {
+		gap: 88px;
+		padding-block: 96px;
+	}
 }
 .section-title {
 	margin: 0;
@@ -583,18 +601,38 @@ h1 {
 	font-weight: 800;
 	letter-spacing: -0.02em;
 }
+/* Narrow screens: one column, each feature reads text then code, and a rule separates one
+   feature from the next. Wide screens: text and code side by side, alternating sides. */
 .feature {
 	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	gap: 48px;
+	flex-direction: column;
+	gap: 24px;
 }
-.feature.reverse {
-	flex-direction: row-reverse;
-	flex-wrap: wrap-reverse;
+.feature + .feature {
+	padding-top: 56px;
+	border-top: 1px solid var(--gray-6);
+}
+@media (min-width: 1008px) {
+	.feature {
+		flex-direction: row;
+		align-items: center;
+		gap: 48px;
+	}
+	.feature.reverse {
+		flex-direction: row-reverse;
+	}
+	.feature-text {
+		flex: 1 1 360px;
+	}
+	.feature-code {
+		flex: 1 1 520px;
+	}
+	.feature + .feature {
+		padding-top: 0;
+		border-top: 0;
+	}
 }
 .feature-text {
-	flex: 1 1 360px;
 	min-width: 0;
 }
 .feature-label {
@@ -618,7 +656,6 @@ h1 {
 	color: var(--gray-2);
 }
 .feature-code {
-	flex: 1 1 520px;
 	min-width: 0;
 	display: flex;
 	flex-direction: column;
