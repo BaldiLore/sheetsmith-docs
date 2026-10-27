@@ -367,6 +367,9 @@ publication, with an identical result.
 { "label": "Guides", "items": [ ... ], "it": { "label": "Guide" } }
 ```
 
+With `"collapsed": true` the group is closed when a page outside it is opened; it opens
+automatically on its own pages. Without it, the group is always open.
+
 **Page**:
 
 ```json

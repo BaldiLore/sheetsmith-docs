@@ -39,6 +39,7 @@
 		},
 		{
 			"label": "Concepts",
+			"collapsed": true,
 			"items": [
 				{
 					"path": "concepts/sheet-classes",
@@ -75,6 +76,7 @@
 		},
 		{
 			"label": "Guides",
+			"collapsed": true,
 			"items": [
 				{
 					"path": "guides/styling",
@@ -174,6 +176,7 @@
 		},
 		{
 			"label": "Recipes",
+			"collapsed": true,
 			"items": [
 				{
 					"path": "recipes/basics",
@@ -240,6 +243,7 @@
 		},
 		{
 			"label": "Reference",
+			"collapsed": true,
 			"items": [
 				{
 					"label": "Annotations",
@@ -376,6 +380,7 @@
 		},
 		{
 			"label": "Help",
+			"collapsed": true,
 			"items": [
 				{
 					"path": "help/faq",
@@ -392,6 +397,7 @@
 		},
 		{
 			"label": "Project",
+			"collapsed": true,
 			"items": [
 				{
 					"path": "project/work-in-progress",

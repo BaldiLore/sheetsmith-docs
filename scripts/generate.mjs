@@ -354,7 +354,7 @@ function toSidebar(items) {
 			return { slug: item.path, ...label, ...badge(item) };
 		}
 		if (item.link) return { label: item.label, ...translations(item, 'label'), link: item.link, ...(item.newTab && { attrs: { target: '_blank' } }) };
-		return { label: item.label, ...translations(item, 'label'), items: toSidebar(item.items) };
+		return { label: item.label, ...translations(item, 'label'), ...(item.collapsed && { collapsed: true }), items: toSidebar(item.items) };
 	});
 }
 
