@@ -6,7 +6,7 @@ export const showcaseClass = `@ExcelSheet(
         title = "Q3 2026 invoices",
         preset = TablePreset.MEDIUM,
         accentColor = "#1F4E79",
-        autoFilter = true)
+        autoFilter = Toggle.TRUE)
 public record InvoiceRow(
         @ExcelColumn(header = "Invoice", order = 10)
         String number,
